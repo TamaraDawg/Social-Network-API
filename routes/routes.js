@@ -77,4 +77,84 @@ router.get('/users', async (req, res) => {
     }
   });
   
+
+
+
+  // THOUGHTS
+
+  // Get all thoughts
+router.get('/thoughts', async (req, res) => {
+    try {
+      const thoughts = await Thought.find();
+      res.json(thoughts);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+  // Get a thought by its id
+  router.get('/thoughts/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+      const thought = await Thought.findById(id);
+      if (!thought) {
+        return res.status(404).json({ error: 'Thought not found' });
+      }
+      res.json(thought);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+  // Create a new thought
+  router.post('/thoughts', async (req, res) => {
+    const { thoughtText, username } = req.body;
+    try {
+      const newThought = new Thought({ thoughtText, username });
+      await newThought.save();
+      res.status(201).json(newThought);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+  // Update a thought by its id
+  router.put('/thoughts/:id', async (req, res) => {
+    const { id } = req.params;
+    const { thoughtText } = req.body;
+    try {
+      const updatedThought = await Thought.findByIdAndUpdate(
+        id,
+        { thoughtText },
+        { new: true }
+      );
+      if (!updatedThought) {
+        return res.status(404).json({ error: 'Thought not found' });
+      }
+      res.json(updatedThought);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+  // Delete a thought by its id
+  router.delete('/thoughts/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+      const deletedThought = await Thought.findByIdAndDelete(id);
+      if (!deletedThought) {
+        return res.status(404).json({ error: 'Thought not found' });
+      }
+      res.json(deletedThought);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  
   module.exports = router;
