@@ -6,7 +6,7 @@ const PORT = 3001;
 const mongoose = require('mongoose');
 const MONGODB_URI = 'mongodb://localhost:27017/social_network_db';
 
-// Define a test route
+// a test route
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
