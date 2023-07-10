@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = 3001; 
+const routes = require('./routes/routes');
 
 
 const mongoose = require('mongoose');
@@ -12,12 +13,10 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
 
 
-
+// Use routes
+app.use('/api', routes);
 
 mongoose
   .connect(MONGODB_URI, {
@@ -31,3 +30,7 @@ mongoose
     console.error('Error connecting to MongoDB:', error);
   });
 
+
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
