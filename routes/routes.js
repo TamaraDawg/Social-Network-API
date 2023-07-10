@@ -156,5 +156,72 @@ router.get('/thoughts', async (req, res) => {
     }
   });
 
+
+  // FRIEND LISTS 
+
+  // Get all friend lists
+router.get('/friendlists', async (req, res) => {
+    try {
+      const friendLists = await FriendList.find();
+      res.json(friendLists);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+  // Get a friend list by username
+  router.get('/friendlists/:username', async (req, res) => {
+    const { username } = req.params;
+    try {
+      const friendList = await FriendList.findOne({ username }).populate('friends');
+      if (!friendList) {
+        return res.status(404).json({ error: 'Friend list not found' });
+      }
+      res.json(friendList);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+  // Update a friend list by username
+  router.put('/friendlists/:username', async (req, res) => {
+    const { username } = req.params;
+    const { friendId } = req.body;
+    try {
+      const friendList = await FriendList.findOne({ username });
+      if (!friendList) {
+        return res.status(404).json({ error: 'Friend list not found' });
+      }
+      friendList.friends.push(friendId);
+      await friendList.save();
+      res.json(friendList);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+  // Delete a friend from a friend list
+  router.delete('/friendlists/:username/:friendId', async (req, res) => {
+    const { username, friendId } = req.params;
+    try {
+      const friendList = await FriendList.findOne({ username });
+      if (!friendList) {
+        return res.status(404).json({ error: 'Friend list not found' });
+      }
+      friendList.friends = friendList.friends.filter(
+        (friend) => friend.toString() !== friendId
+      );
+      await friendList.save();
+      res.json(friendList);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  
   
   module.exports = router;
