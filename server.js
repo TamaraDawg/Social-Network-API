@@ -7,6 +7,8 @@ const routes = require('./routes/routes');
 const mongoose = require('mongoose');
 const MONGODB_URI = 'mongodb://localhost:27017/social_network_db';
 
+app.use(express.json())
+
 // a test route
 app.get('/', (req, res) => {
   res.send('Hello, world!');
